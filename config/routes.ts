@@ -28,7 +28,7 @@
     path: '/admin',
     name: 'admin',
     icon: 'crown',
-    access: 'canAdmin',
+    access: 'canSuper',
     component: './Admin',
     routes: [
       {
@@ -37,6 +37,25 @@
         icon: 'smile',
         component: './Welcome',
       },
+      {
+        component: './404',
+      },
+    ],
+  },
+  {
+    path: '/promotion',
+    name: 'promotion',
+    icon: 'crown',
+    access: 'canSuper',
+    component: './Promotion/EventPreview',
+    routes: [
+      {
+        path: '/promotion/event-preview',
+        name: 'event-preview',
+        icon: 'smile',
+        component: './Promotion/EventPreview',
+      },
+
       {
         component: './404',
       },

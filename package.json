@@ -12,15 +12,6 @@
     "i18n-remove": "pro i18n-remove --locale=zh-CN --write",
     "postinstall": "umi g tmp",
     "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier && npm run tsc",
-    "lint-staged": "lint-staged",
-    "lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
-    "lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src && npm run lint:style",
-    "lint:js": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
-    "lint:prettier": "prettier -c --write \"src/**/*\" --end-of-line auto",
-    "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
-    "openapi": "umi openapi",
-    "precommit": "lint-staged",
-    "prettier": "prettier -c --write \"src/**/*\"",
     "start": "cross-env UMI_ENV=dev MOCK=none umi dev",
     "start:dev": "cross-env REACT_APP_ENV=dev UMI_ENV=dev umi dev",
     "start:no-mock": "cross-env MOCK=none UMI_ENV=dev umi dev",
@@ -34,13 +25,7 @@
     "serve": "umi-serve",
     "tsc": "tsc --noEmit"
   },
-  "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "prettier --write"
-    ]
-  },
+
   "browserslist": [
     "> 1%",
     "last 2 versions",

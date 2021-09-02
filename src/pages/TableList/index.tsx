@@ -46,7 +46,6 @@ const handleUpdate = async (fields: FormValueType) => {
       key: fields.key,
     });
     hide();
-
     message.success('Configuration is successful');
     return true;
   } catch (error) {
@@ -90,9 +89,7 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
