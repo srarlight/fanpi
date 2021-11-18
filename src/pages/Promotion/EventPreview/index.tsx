@@ -1,28 +1,29 @@
-import {message, Drawer, Button} from 'antd';
+import {message, Button, Image,} from 'antd';
 import React, {useState, useRef} from 'react';
-import {useIntl, FormattedMessage} from 'umi';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import {ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import ProDescriptions from '@ant-design/pro-descriptions';
-import {rule, addRule} from '@/services/ant-design-pro/api';
-import {PlusOutlined} from "@ant-design/icons";
-import { useAccess } from 'umi';
+import {ModalForm, ProFormTextArea} from '@ant-design/pro-form';
+
+import {getActivityList, saveChannelMark, updateActivityList} from '@/services/ant-design-pro/api';
+import {useAccess, history} from 'umi';
+import {isNull} from "@/util";
+import CollectionCreateForm from "@/pages/Promotion/components/CollectionCreateForm";
 
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
-const handleAdd = async (fields: API.RuleListItem) => {
-  const hide = message.loading('正在添加');
+const handleAdd = async (fields: API.updateJsonList) => {
+  const object = JSON.parse(fields.json as string);
+  const {dataList} = object.data;
+  const hide = message.loading('正在更新');
   try {
-    await addRule({...fields});
+    const res = await updateActivityList({json: dataList});
     hide();
-    message.success('Added successfully');
+    if (res.success) {
+      message.success('更新成功');
+    } else {
+      message.error('更新失败，请用红包联系管理员修复');
+    }
+
     return true;
   } catch (error) {
     hide();
@@ -30,16 +31,20 @@ const handleAdd = async (fields: API.RuleListItem) => {
     return false;
   }
 };
-
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
-
-
-
+const getList = async (params: API.dataListItem) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const paramsKey in params) {
+    if (params[paramsKey] === '') {
+      // eslint-disable-next-line no-param-reassign
+      delete params[paramsKey]
+    }
+  }
+  try {
+    return await getActivityList(params);
+  } catch (error) {
+    return '请求失败'
+  }
+};
 
 const TableList: React.FC = () => {
   /**
@@ -47,131 +52,149 @@ const TableList: React.FC = () => {
    * @zh-CN 新建窗口的弹窗
    *  */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
-  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  const intl = useIntl();
+  const access = useAccess()
+  const [promotionModalVisible, handlePromotionModalVisible] = useState<boolean>(false);
+  const [recordData, setRecordData] = useState({
+    id: undefined
+  })
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      title: (
-        <FormattedMessage
-          id="pages.eventPreview.activeId"
-          defaultMessage="活动id"
-        />
-      ),
-      dataIndex: 'activeId',
-      render: (dom, entity) => {
+      title: '活动id',
+      dataIndex: 'id',
+      width: '60px',
+      key: 'id',
+    },
+    {
+      title: '活动信息',
+      dataIndex: 'url',
+      key: 'url',
+      hideInSearch: true,
+      hideInForm: true,
+      render: (_, record) => {
         return (
-          <a
+          <Image
+            width={200}
+            src={record.url}
+          />
+        )
+      }
+    },
+    {
+      title: '活动描述',
+      dataIndex: 'desc',
+      key: 'desc',
+      valueType: 'textarea',
+      hideInSearch: true,
+      render: (_, record) => [
+        <h4 key="actName">{record?.actName?.replace(/"/, '')}</h4>,
+        <p key="actDes">{record.actDes?.replace(/"/, '')}</p>
+      ]
+
+    },
+    {
+      title: '推广规则',
+      dataIndex: 'actRule',
+      key: 'actRule',
+      hideInForm: true,
+      hideInSearch: true,
+      render: (_, record) => {
+        const NewRule = record.actRule.replace(/\\/g, "");
+        return (
+          <div dangerouslySetInnerHTML={{__html: NewRule}} key="actRule"/>
+        )
+      }
+    },
+    {
+      title: '平均佣金比例',
+      dataIndex: 'ratio',
+      key: 'ratio',
+      hideInForm: true,
+      hideInSearch: true
+    },
+    {
+      title: "活动有效期",
+      dataIndex: 'dateBound',
+      key: 'dateBound',
+      hideInSearch: true
+    },
+    {
+      title: "操作",
+      dataIndex: 'option',
+      key: 'option',
+      width: '50px',
+      valueType: 'option',
+      render: (_, record) => {
+        const ActSrcButton = !isNull(record.actSrc) ? <Button type="primary"
+                                                              key="actSrc"
+                                                              href={record.actSrc}
+        >打包物料下载</Button> : null
+        return <div>
+          <Button
+            type="primary"
+            style={{marginBottom: '5px'}}
+            key="config"
             onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
+              setRecordData(record as any);
+              handlePromotionModalVisible(true);
             }}
           >
-            {dom}
-          </a>
-        );
+            我要推广
+          </Button>
+          {ActSrcButton}
+        </div>
       },
     },
-
-    {
-      title: (
-        <FormattedMessage
-          id="pages.eventPreview.url"
-          defaultMessage=""
-        />
-      ),
-      dataIndex: 'url',
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.eventPreview.url',
-          defaultMessage: ' 万 ',
-        })}`,
-    },
-    {
-      title: <FormattedMessage id="pages.eventPreview.titleDesc" defaultMessage="活动信息"/>,
-      dataIndex: 'desc',
-      valueType: 'textarea',
-    },
-    {
-      title: <FormattedMessage id="pages.eventPreview.actRule" defaultMessage="推广规则"/>,
-      dataIndex: 'actRule',
-      hideInForm: true,
-    },
-    {
-      title: <FormattedMessage id="pages.eventPreview.ratio" defaultMessage="平均佣金比例"/>,
-      dataIndex: 'ratio',
-      hideInForm: true,
-    },
-    {
-      title: (
-        <FormattedMessage
-          id="pages.eventPreview.dateBound"
-          defaultMessage="活动有效期"
-        />
-      ),
-      dataIndex: 'dateBound',
-    },
-    {
-      title: <FormattedMessage id="pages.eventPreview.titleOption" defaultMessage="Operating"/>,
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="config"
-          onClick={() => {
-            setCurrentRow(record);
-          }}
-        >
-          <FormattedMessage id="pages.eventPreview.config" defaultMessage="我要推广"/>
-        </a>,
-
-      ],
-    },
   ];
-  const access = useAccess()
+  const onCreate = async (values: any) => {
+    if (values.channel === 2) {
+      await saveChannelMark({
+        "channelMark": values.channelMark,
+      })
+    }
+    // @ts-ignore
+    history.push({
+      pathname: '/promotion/event-link',
+      query: {
+        channelMark: values.channelMark,
+        actId: recordData.id
+      },
+    });
+    handlePromotionModalVisible(false);
+  };
+
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
   // @ts-ignore
   return (
     <PageContainer>
       <ProTable<API.RuleListItem, API.PageParams>
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="actName"
         toolBarRender={() => [
-         access.canSuper?<Button
+          access.canSuper ? <Button
             type="primary"
             key="primary"
             onClick={() => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          </Button>:null,
+            更新列表数据
+          </Button> : null,
         ]}
-        request={rule}
+        request={getList as any}
         columns={columns}
         pagination={false}
       />
-
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.eventPreview.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
+        title='更新列表'
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as API.RuleListItem);
+          const success = await handleAdd(value as API.updateJsonList);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -180,49 +203,16 @@ const TableList: React.FC = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.eventPreview.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc"/>
+        <ProFormTextArea width="md" name="json" label="粘贴json"/>
       </ModalForm>
-
-      <Drawer
-        width={600}
-        visible={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer>
+      <CollectionCreateForm recordData={recordData} promotionModalVisible={promotionModalVisible} onCreate={onCreate}
+                            onCancel={() => {
+                              handlePromotionModalVisible(false)
+                            }
+                            }/>
     </PageContainer>
   );
 };
+
 
 export default TableList;

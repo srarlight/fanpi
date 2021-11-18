@@ -1,16 +1,29 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import type {Settings as LayoutSettings} from '@ant-design/pro-layout';
+import {PageLoading} from '@ant-design/pro-layout';
+import type {RunTimeLayoutConfig} from 'umi';
+import {history} from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
+// import {RequestConfig} from 'umi';
 
 const loginPath = '/home/login';
+const registerPath = '/home/register'
 
+// export const request: RequestConfig = {
+//   errorConfig: {
+//     adaptor: (resData) => {
+//       return {
+//         ...resData,
+//         success: resData.ok,
+//
+//       };
+//     },
+//   },
+// };
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
-  loading: <PageLoading />,
+  loading: <PageLoading/>,
 };
 
 /**
@@ -24,16 +37,15 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser();
-      console.log(msg);
-      return msg;
+      return msg.data;
     } catch (error) {
-      console.log(loginPath, 'loginPath');
       history.push(loginPath);
     }
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
+  if (![registerPath, loginPath,'/'].includes(history.location.pathname)) {
+    console.log(history.location.pathname)
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -48,19 +60,19 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+export const layout: RunTimeLayoutConfig = ({initialState}) => {
   return {
-    rightContentRender: () => <RightContent />,
+    rightContentRender: () => <RightContent/>,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.username,
+      content: initialState?.currentUser?.name,
     },
-    footerRender: () => <Footer />,
+    footerRender: () => <Footer/>,
     onPageChange: () => {
-      const { location } = history;
+      const {location} = history;
       // 如果没有登录，重定向到 login
-
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      const whitePath = [loginPath, registerPath]
+      if (!initialState?.currentUser && !whitePath.includes(location.pathname)) {
         history.push(loginPath);
       }
     },

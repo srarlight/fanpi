@@ -1,4 +1,4 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import {Settings as LayoutSettings} from '@ant-design/pro-layout';
 
 const Settings: LayoutSettings & {
   pwa?: boolean;
@@ -12,9 +12,12 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  menu:{
+    locale:true
+  },
+  title: '饭派开放平台',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  // logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
 };
 

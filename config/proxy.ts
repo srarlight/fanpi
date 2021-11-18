@@ -14,16 +14,12 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
-    '/auth': {
-      target: 'http://localhost:1337',
+    '/fanpai': {
+      target: 'http://localhost:7001',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
-    '/user': {
-      target: 'http://localhost:1337',
-      changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
+
   },
   test: {
     '/api/': {
