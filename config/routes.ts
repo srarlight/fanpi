@@ -6,6 +6,7 @@ export default [
       {path: '/home', routes: [
         {name: '登录', path: '/home/login', component: './user/Login'},
         {name: '注册', path: '/home/register', component: './user/Register'},
+          {name: '微信扫码登录', path: '/home/wechatLogin', component: './user/Login/wxLogin'},
         ]
       },
 

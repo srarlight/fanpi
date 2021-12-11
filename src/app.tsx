@@ -1,13 +1,14 @@
 import type {Settings as LayoutSettings} from '@ant-design/pro-layout';
 import {PageLoading} from '@ant-design/pro-layout';
 import type {RunTimeLayoutConfig} from 'umi';
-import {history} from 'umi';
+import {history, request} from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
 // import {RequestConfig} from 'umi';
 
-const loginPath = '/home/login';
+
+const loginPath = '/home/login/';
 const registerPath = '/home/register'
 
 // export const request: RequestConfig = {
@@ -25,6 +26,16 @@ const registerPath = '/home/register'
 export const initialStateConfig = {
   loading: <PageLoading/>,
 };
+declare global {
+  interface Window {
+    APP_CONFIG: any;
+    WxLogin: any,
+    receiveMessageFromIndex: any
+  }
+}
+request(`${window.location.origin}/config.json`).then(res => {
+  window.APP_CONFIG = res
+})
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -44,7 +55,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (![registerPath, loginPath,'/'].includes(history.location.pathname)) {
+  if (![registerPath, loginPath, '/'].includes(history.location.pathname)) {
     console.log(history.location.pathname)
     const currentUser = await fetchUserInfo();
     return {
@@ -71,7 +82,7 @@ export const layout: RunTimeLayoutConfig = ({initialState}) => {
     onPageChange: () => {
       const {location} = history;
       // 如果没有登录，重定向到 login
-      const whitePath = [loginPath, registerPath]
+      const whitePath = [loginPath, registerPath, '/home/wechatLogin']
       if (!initialState?.currentUser && !whitePath.includes(location.pathname)) {
         history.push(loginPath);
       }

@@ -36,7 +36,17 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
     ...(options || {}),
   });
 }
-
+/** 微信扫码登录接口 POST /fanpai/users/wxLogin */
+export async function wxLogin(body: API.wxLoginParams, options?: { [key: string]: any }) {
+  return request<API.LoginResult>('/fanpai/users/wxLogin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 /** 注册接口 POST /fanpai/users/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
   return request<API.RegisterResult>('/fanpai/users/register', {

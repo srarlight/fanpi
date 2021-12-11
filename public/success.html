@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+</head>
+<body>
+<div id="container">
+  <p class="title" style="text-align: center">登录成功</p>
+</div>
+<script>
+  //获取url参数信息
+  var params = location.search;
+  params = params.substring(1);
+  params = params.split('&');
+  var obj = {};
+  params.forEach(function (item) {
+    var arr = item.split('=');
+    obj[arr[0]] = decodeURI(arr[1]);
+  });
+  // 传输obj给 src\common\WXLogin\index.jsx 的 message监听事件
+  parent.postMessage(obj, '*');
+  console.log(1234, 'post')
+</script>
+</body>
+</html>

@@ -5,21 +5,18 @@ import {
   UserOutlined,
 
 } from '@ant-design/icons';
-import {message, } from 'antd';
+import {message, Tabs,} from 'antd';
 import {Form, Input} from "antd";
-import React from 'react';
-import  {ProFormCheckbox} from '@ant-design/pro-form';
-import { history, useModel} from 'umi';
-
+import React, {useState} from 'react';
+import {ProFormCheckbox} from '@ant-design/pro-form';
+import {history, useModel} from 'umi';
+import WechatLogin from './wxLogin'
 import {login} from '@/services/ant-design-pro/api';
-
-
 import "./index.less";
-
 
 const Login: React.FC = () => {
   const {initialState, setInitialState} = useModel('@@initialState');
-
+  const [type, setType] = useState<string>('wxLogin');
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
@@ -47,11 +44,10 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-
     } catch (error) {
       // const defaultLoginFailureMessage = '登陆失败，请重试！';
       // message.error(error.data.message || defaultLoginFailureMessage);
-      console.log(error,'error')
+      console.log(error, 'error')
     }
 
 
@@ -70,47 +66,66 @@ const Login: React.FC = () => {
           size="large"
           onFinish={(values) => handleSubmit(values as API.LoginParams)}
         >
-          <Form.Item
-            name="userName"
-            rules={[{required: true, message: "请输入账号"}]}
-          >
-            <Input
-              style={{width: "238px"}}
-              prefix={<UserOutlined className="form-icon"/>}
-              placeholder="账号"
+          <Tabs activeKey={type} onChange={setType}>
+            <Tabs.TabPane
+              key="wxLogin"
+              tab={'微信扫码登录'}
             />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{required: true, message: "请输入密码"}]}
-          >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon"/>}
-              type="password"
-              style={{width: "238px"}}
-              placeholder="请输入密码"
+            <Tabs.TabPane
+              key="account"
+              tab={'账户密码登录'}
             />
-          </Form.Item>
-          <div
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <ProFormCheckbox noStyle name="autoLogin">
-              自动登录
-            </ProFormCheckbox>
-            <a
+
+          </Tabs>
+          {type === 'account' && (<>
+            <Form.Item
+              name="userName"
+              rules={[{required: true, message: "请输入账号"}]}
+            >
+              <Input
+                style={{width: "238px"}}
+                prefix={<UserOutlined className="form-icon"/>}
+                placeholder="账号"
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{required: true, message: "请输入密码"}]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon"/>}
+                type="password"
+                style={{width: "238px"}}
+                placeholder="请输入密码"
+              />
+            </Form.Item>
+            <div
               style={{
-                float: 'right',
+                marginBottom: 24,
               }}
             >
-              忘记密码 ?
-            </a>
-          </div>
-            <a onClick={() => history.push('/home/register')}>去注册</a>
-          <p className="login">
-            <input type="submit" value="Login"/>
-          </p>
+              <ProFormCheckbox noStyle name="autoLogin">
+                自动登录
+              </ProFormCheckbox>
+              <a
+                style={{
+                  float: 'right',
+                }}
+              >
+                忘记密码 ?
+              </a>
+            </div>
+            <div style={{display: "flex", justifyContent: "space-between"}}>
+              <a onClick={() => history.push('/home/register')}>去注册</a>
+            </div>
+            <p className="login">
+              <input type="submit" value="Login"/>
+            </p>
+          </>)}
+          {type === 'wxLogin' && (<>
+            <WechatLogin/>
+          </>)}
+
 
         </Form>
       </div>
