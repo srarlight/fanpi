@@ -25,9 +25,14 @@ export default [
     ],
   },
   {
-    path: '/user', name: '用户中心', icon: 'smile', routes: [
-      {path: '/user/userInfo', name: '基本信息', icon: 'smile', component: './Welcome'},
-      {path: '/user/orderList', name: '订单列表', icon: 'smile', component: './OrderList'},
+    path: '/user', name: '用户中心', icon: 'smile',
+    routes: [
+      {path: './userInfo', name: '基本信息', icon: 'smile', component: './Welcome', },
+      {path: './orderList', name: '订单列表', icon: 'smile', component: './OrderList'},
+      {path: './userManager', name: '账号管理', icon: 'smile', component: './user/UserManager'},
+      {
+        "redirect": "./userInfo"
+      },
       {component: './404'},
     ]
   },
@@ -49,6 +54,9 @@ export default [
         name: '推广信息',
         hideInMenu: true,
         component: './eventInfo',
+      },
+      {
+        "redirect": "/promotion/event-preview"
       },
       {component: './404'},
     ],

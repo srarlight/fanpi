@@ -30,7 +30,8 @@ declare global {
   interface Window {
     APP_CONFIG: any;
     WxLogin: any,
-    receiveMessageFromIndex: any
+    receiveMessageFromIndex: any,
+    caches:any
   }
 }
 request(`${window.location.origin}/config.json`).then(res => {

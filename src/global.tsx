@@ -40,7 +40,7 @@ if (pwa) {
         );
       }); // Refresh current page to use the updated HTML and other assets after SW has skiped waiting
 
-      window.location.reload(true);
+      window.location.reload();
       return true;
     };
 
