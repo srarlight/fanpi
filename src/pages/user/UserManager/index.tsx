@@ -24,12 +24,11 @@ const defaultData = [
 type DataItem = typeof defaultData[number];
 
 
-const startEditable = async (id: number) => {
-  console.log(id)
-}
 const UserManager: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
-
+  const bind = (id: number) =>{
+    console.log(id)
+  }
   return <PageContainer>
     <ProList<DataItem>
       rowKey="id"
@@ -66,10 +65,12 @@ const UserManager: React.FC = () => {
         //   },
         // },
         actions: {
-          render: (text: any, row: { id: any; }, index: any, action: { startEditable: (arg0: any) => void }) => [
+
+
+          render: (text: any, row: { id: any; }, index: any) => [
             <a
               onClick={async () => {
-                await startEditable(row.id);
+                await bind(row.id);
               }}
               key="link"
             >
