@@ -6,7 +6,7 @@ const Settings: LayoutSettings & {
 } = {
   navTheme: 'light',
   // 拂晓蓝
-  primaryColor: '#1890ff',
+  primaryColor: '#ffD129',
   layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,
@@ -17,7 +17,7 @@ const Settings: LayoutSettings & {
   },
   title: '饭派开放平台',
   pwa: false,
-  // logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLiajgNaz9JZCvAibicvAK3zlRPicdDt65nFAnjzjoYQZm0h5yR7mCRlBJPlwUkRMLuJ3ZDwyFqtXSLSg/132',
   iconfontUrl: '',
 };
 

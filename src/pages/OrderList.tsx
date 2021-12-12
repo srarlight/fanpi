@@ -71,8 +71,8 @@ const OrderList: React.FC = () => {
     },
     {
       title: '渠道标识',
-      dataIndex: 'sid',
-      key: 'sid',
+      dataIndex: 'uid',
+      key: 'uid',
       valueEnum: datas
     },
     {
