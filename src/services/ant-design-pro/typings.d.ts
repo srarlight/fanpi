@@ -47,6 +47,7 @@ declare namespace API {
     userName: string
 
   };
+
   type RegisterResult = {
     success: boolean;
     data?: object
@@ -59,7 +60,15 @@ declare namespace API {
     current?: number;
     pageSize?: number;
   };
-
+  type CheckImageCode = {
+    randstr:string
+    ret: number
+    ticket: string
+  };
+  type CheckImageCodeResult ={
+    success:boolean,
+    errorMessage?:string
+  }
   type RuleListItem = {
     key: (value: API.RuleListItem, index: number, array: API.RuleListItem[]) => U;
     paytime: moment.MomentInput;

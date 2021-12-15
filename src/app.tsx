@@ -31,7 +31,8 @@ declare global {
     APP_CONFIG: any;
     WxLogin: any,
     receiveMessageFromIndex: any,
-    caches:any
+    caches: any,
+    callbackName:any
   }
 }
 request(`${window.location.origin}/config.json`).then(res => {

@@ -71,6 +71,32 @@ export async function sendEmailCode(options?: { [key: string]: any }) {
     }
   )
 }
+/** 发送手机号验证*/
+export async function sendSms(body:{phone:string},options?: { [key: string]: any }) {
+  return request<API.EmaiResult>(
+    '/fanpai/users/sendSms', {
+      method: 'post',
+      params:{
+        ...options
+      },
+      data:body,
+      ...(options || {}),
+    }
+  )
+}
+/** 验证图形验证码*/
+export async function checkImageCode(body: API.CheckImageCode,options?: { [key: string]: any }) {
+  return request<API.CheckImageCodeResult>(
+    '/fanpai/users/checkImageCode', {
+      method: 'post',
+      params:{
+        ...options
+      },
+      data:body,
+      ...(options || {}),
+    }
+  )
+}
 
 /**  Post /fanpai/users/orderList  获取订单信息 */
 export async function getOrderList(options?: { [key: string]: any }) {

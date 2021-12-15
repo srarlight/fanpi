@@ -54,7 +54,7 @@ const Login: React.FC = () => {
   }; // @ts-ignore
 
   return (
-    <div style={{display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems: "center"}}
+    <div style={{display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems: "center",flexDirection:"column"}}
          className="loginBody">
       <div className="form">
         <h1> Login </h1>
@@ -128,6 +128,10 @@ const Login: React.FC = () => {
 
 
         </Form>
+
+      </div>
+      <div style={{textAlign:"center",paddingBottom:'20px',position:"absolute",bottom:0}}>
+        <a href={'http://beian.miit.gov.cn/'} target={"_blank"} style={{color:"#000"}}>粤ICP备2021005997号</a>
       </div>
     </div>
   );

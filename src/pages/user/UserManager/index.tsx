@@ -1,7 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ProList from '@ant-design/pro-list';
 import {PageContainer} from '@ant-design/pro-layout';
 import {MobileTwoTone, MailTwoTone} from "@ant-design/icons";
+import BindInfoForm from "@/pages/Promotion/EventPreview/components/BindInfoForm";
+
+
 
 const defaultData = [
   {
@@ -16,7 +19,7 @@ const defaultData = [
     name: '绑定邮箱',
     image:
       <MailTwoTone style={{'fontSize': '30px'}}/>,
-    desc: '我是一条测试的描述',
+    desc: '邮箱号绑定成功后可以作为登录账号使用',
   },
 
 ];
@@ -26,8 +29,10 @@ type DataItem = typeof defaultData[number];
 
 const UserManager: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
-  const bind = (id: number) =>{
-    console.log(id)
+  const [bindInfoModalVisible, setBindInfoModalVisible] = useState<boolean>(false);
+  const [bindId, setBindId] = useState<string>('')
+  const bindInfo = (values: any) => {
+    console.log(values)
   }
   return <PageContainer>
     <ProList<DataItem>
@@ -36,12 +41,6 @@ const UserManager: React.FC = () => {
       dataSource={dataSource}
       showActions={'always'}
       split={true}
-      editable={{
-        onSave: async (key: any, record: any, originRow: any) => {
-          console.log(key, record, originRow);
-          return true;
-        },
-      }}
       onDataSourceChange={setDataSource}
       metas={{
         title: {
@@ -54,23 +53,12 @@ const UserManager: React.FC = () => {
         description: {
           dataIndex: 'desc',
         },
-        // subTitle: {
-        //   render: () => {
-        //     return (
-        //       <Space size={0}>
-        //         <Tag color="blue">Ant Design</Tag>
-        //         <Tag color="#5BD8A6">TechUI</Tag>
-        //       </Space>
-        //     );
-        //   },
-        // },
         actions: {
-
-
-          render: (text: any, row: { id: any; }, index: any) => [
+          render: (text: any, row: { id: any; }) => [
             <a
               onClick={async () => {
-                await bind(row.id);
+                setBindId(row.id)
+                setBindInfoModalVisible(true)
               }}
               key="link"
             >
@@ -80,6 +68,9 @@ const UserManager: React.FC = () => {
         },
       }}
     />
+    <BindInfoForm bindInfoModalVisible={bindInfoModalVisible} id={bindId} bindInfo={bindInfo} onCancel={() => {
+      setBindInfoModalVisible(false)
+    }}/>
   </PageContainer>
 }
 export default UserManager
