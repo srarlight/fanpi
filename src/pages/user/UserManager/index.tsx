@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ProList from '@ant-design/pro-list';
 import {PageContainer} from '@ant-design/pro-layout';
 import {MobileTwoTone, MailTwoTone} from "@ant-design/icons";
-import BindInfoForm from "@/pages/Promotion/EventPreview/components/BindInfoForm";
+import BindInfoForm from "@/pages/user/UserManager/components/BindInfoForm";
+import {bindUserInfo} from "@/services/ant-design-pro/api";
+import {Encrypt} from "@/util";
 
 
 
@@ -31,8 +33,10 @@ const UserManager: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
   const [bindInfoModalVisible, setBindInfoModalVisible] = useState<boolean>(false);
   const [bindId, setBindId] = useState<string>('')
-  const bindInfo = (values: any) => {
-    console.log(values)
+  const bindInfo = async (values: API.bindInfo) => {
+    const params = {...values,password:Encrypt(values.password),confirm:Encrypt(values.confirm),mode:'phone'}
+    return await bindUserInfo(params);
+
   }
   return <PageContainer>
     <ProList<DataItem>

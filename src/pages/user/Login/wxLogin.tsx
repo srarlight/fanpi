@@ -51,13 +51,11 @@ const WXLogin: React.FC = () => {
       await setLoading(false)
       window.removeEventListener('message', window.receiveMessageFromIndex)
       window.receiveMessageFromIndex = async function (event: any) {
-        console.log(event, 'event')
         if (event !== undefined) {
           // 发送请求 event.data为微信信息对象 为对象类型再请求接口
           if (typeof event.data === 'object') {
             const WXCode = event.data.code
             // 没有code或已发请求 不重复请求，isLoading为是否在登录中判断值
-            console.log(isLoading, WXCode)
             if (!WXCode || isLoading) return
             const body = {
               code: WXCode,

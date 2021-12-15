@@ -97,7 +97,19 @@ export async function checkImageCode(body: API.CheckImageCode,options?: { [key: 
     }
   )
 }
-
+/** 绑定用户信息*/
+export async function bindUserInfo(body: API.bindInfo,options?: { [key: string]: any }) {
+  return request<API.CheckImageCodeResult>(
+    '/fanpai/users/updateUserInfo', {
+      method: 'post',
+      params:{
+        ...options
+      },
+      data:body,
+      ...(options || {}),
+    }
+  )
+}
 /**  Post /fanpai/users/orderList  获取订单信息 */
 export async function getOrderList(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/fanpai/users/orderList', {

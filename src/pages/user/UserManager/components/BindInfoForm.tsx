@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Form, Input, Modal, Button, Select, message} from "antd";
+import {Form, Input, Modal, Button, Select} from "antd";
 import {LockOutlined} from "@ant-design/icons";
 import {checkImageCode, sendSms} from "@/services/ant-design-pro/api";
 
@@ -9,7 +9,7 @@ const {Option} = Select;
 interface IBIndInfoFormProps {
   bindInfoModalVisible: boolean,
   id: string,
-  bindInfo: (values: any) => void,
+  bindInfo: (values: any) => any,
   onCancel: () => void
 }
 
@@ -64,7 +64,6 @@ const BindInfoForm: React.FC<IBIndInfoFormProps> = (
     // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
     // res（客户端出现异常错误 仍返回可用票据） = {ret: 0, ticket: "String", randstr: "String",  errorCode: Number, errorMessage: "String"}
     if (res.ret === 0) {
-
       await form.validateFields(['phone'])
       const result = await checkImageCode(rest);
       if (result.success) {
@@ -90,9 +89,13 @@ const BindInfoForm: React.FC<IBIndInfoFormProps> = (
       width="500px"
       visible={bindInfoModalVisible}
       onOk={() => {
-        form.validateFields().then(values => {
-          form.resetFields();
-          bindInfo(values);
+        form.validateFields().then(async values => {
+
+         const result = await bindInfo(values);
+          if(result.success){
+            form.resetFields();
+            onCancel()
+          }
         })
           .catch(info => {
             console.log('Validate Failed:', info);

@@ -81,6 +81,13 @@ declare namespace API {
     data?: object;
     des: string;
   };
+  type bindInfo = {
+    checkCode?: string
+    confirm?: string
+    password?: string
+    phone?: string
+    prefix?: string
+  }
   type updateJsonList = {
     json?: string
   }
